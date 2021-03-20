@@ -1,0 +1,74 @@
+<html>
+    <head>
+        <style>
+            textarea {
+                width: 600px;
+                height: 400px;
+            }
+            
+        </style>
+    </head>
+    <body>
+        <input type="file" id="file-input"> 
+        <div id=highlights>
+        <textarea id="file-contents">
+        </textarea>
+        </div>
+        <script>
+            var fileContents = document.getElementById('file-contents'); 
+            var fileInput = document.getElementById('file-input'); 
+            var reader = new FileReader(); 
+            reader.addEventListener('load', (ev)=>{ 
+            fileContents.value = ev.target.result; 
+            console.log(fileContents.value);
+
+            let api="https://api.textgears.com/spelling";
+            let apikey="1gVny1rfj02gy7kY";
+            let lang="en-GB";
+                str=fileContents.value
+                var i = 0, strLength = str.length;
+                for(i; i < strLength; i++) {
+                str = str.replace(" ", "+");
+                }
+            let url=api+"?text="+str+"&language="+lang+"&key="+apikey;
+            console.log(url);
+            fetch(url)
+                .then(response=>response.json())
+                .then(data=>{
+                    console.log(data);
+                    modification=data
+                    for(i in data.response.errors){
+                        console.log(data.response.errors[i].offset);
+                        console.log(data.response.errors[i].length);
+                        let offset1=data.response.errors[i].offset;
+                        let len=data.response.errors[i].length;
+                        for(j;j<strLength;j++){
+                            
+                        }
+                    }
+                })
+            }); 
+
+
+
+
+
+
+
+
+
+
+
+
+
+            fileInput.addEventListener('change', (ev)=>{ 
+            reader.readAsText(ev.target.files[0]) 
+            }); 
+
+            
+            
+            
+
+        </script>
+    </body>
+</html>
