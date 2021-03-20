@@ -2,18 +2,34 @@
     <head>
         <style>
             textarea {
-                width: 600px;
-                height: 400px;
+                width: 10px;
+                height: 10px;
             }
-            
+            .red{                
+                color:red;
+            } 
+            span{
+                color:red
+            }
+            .context-menu ul li { 
+                border:1px solid black; 
+            } 
+            .context-menu ul li a { 
+                text-decoration:none; 
+                color:black; 
+            } 
+            .context-menu ul li:hover { 
+                background:darkgray; 
+            }     
         </style>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     </head>
     <body>
         <input type="file" id="file-input"> 
-        <div id=highlights>
         <textarea id="file-contents">
         </textarea>
-        </div>
+        <p id="filec"></p>
+        <div id="contextMenu" class="context-menu" style="display:none"></div>
         <script>
             var fileContents = document.getElementById('file-contents'); 
             var fileInput = document.getElementById('file-input'); 
@@ -21,7 +37,7 @@
             reader.addEventListener('load', (ev)=>{ 
             fileContents.value = ev.target.result; 
             console.log(fileContents.value);
-
+            filec.innerHTML=fileContents.value
             let api="https://api.textgears.com/spelling";
             let apikey="1gVny1rfj02gy7kY";
             let lang="en-GB";
@@ -30,8 +46,10 @@
                 for(i; i < strLength; i++) {
                 str = str.replace(" ", "+");
                 }
+            keywords=[];
             let url=api+"?text="+str+"&language="+lang+"&key="+apikey;
             console.log(url);
+            str1=fileContents.value
             fetch(url)
                 .then(response=>response.json())
                 .then(data=>{
@@ -42,11 +60,38 @@
                         console.log(data.response.errors[i].length);
                         let offset1=data.response.errors[i].offset;
                         let len=data.response.errors[i].length;
-                        for(j;j<strLength;j++){
-                            
-                        }
+                        keywords.push(str1.substring(offset1,offset1+len))
+                        
                     }
+                    str1=fileContents.value
+                    words=str1.split(" ");
+                    console.log(words);
+                    console.log(keywords);
+                    finalp=document.createElement("p");
+               for(var x of words){
+                   console.log(x)
+                   id=0
+                   if(keywords.includes(x)){
+                            var span=document.createElement("span");
+                            var spantxt=document.createTextNode(x );
+                            span.append(spantxt);
+                            finalp.append(span);
+                            span.classList.add("red");
+                            id+=1;
+                            span.setAttribute("id",id);
+                            span.setAttribute("value",x);
+                        }
+                        else{
+                            var spantxt=document.createTextNode(x);
+                            finalp.append(spantxt);
+                        }
+                        }
+                        console.log(finalp);
+                    
+                    document.getElementById("filec").append(finalp);
+                   
                 })
+                                                              
             }); 
 
 
